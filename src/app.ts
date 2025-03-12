@@ -40,6 +40,16 @@ const MOCK_ARTICLE_LIST = [
   },
 ]
 
+function articleLayout() {}
+
+function categoryNav() {}
+
+function categoryButton() {}
+
+function articleList() {}
+
+function articleCard() {}
+
 container.innerHTML = `
   <section class="text-gray-900 p-6 bg-gray-50">
     <div class="max-w-4xl mx-auto">
