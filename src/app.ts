@@ -2,7 +2,7 @@ import './style.css'
 
 const container: HTMLElement | null = document.getElementById('root')
 
-const MOCK_CATEGORY = [
+const MOCK_CATEGORIES = [
   { id: 'all', label: '전체' },
   { id: 'dev', label: '개발' },
   { id: 'design', label: '디자인' },
@@ -38,85 +38,72 @@ const MOCK_ARTICLE_LIST = [
   },
 ]
 
-function articleLayout() {
+function articleLayout(categories: any, articles: any) {
   let template = `
     <section class="text-gray-900 p-6 bg-gray-50">
       <div class="max-w-4xl mx-auto">
         <header>
-          {{__categoryNav__}}
+          ${categoryNav(categories)}
         </header>
         <main>
-          {{__articleList__}}
+          ${articleList(articles)}
         </main>
       </div>
     </section>
   `
 
   if (!container) throw '최상위 컨테이너가 없어 UI를 진행하지 못합니다.'
-
-  template = template.replace('{{__categoryNav__}}', categoryNav())
-  template = template.replace('{{__articleList__}}', articleList())
   container.innerHTML = template
 }
 
-function categoryNav() {
-  let template = `
+function categoryNav(categories: any) {
+  return `
     <nav class="mb-8 flex gap-4">
-      {{__categoryButton__}}
+      ${categories.map(categoryButton).join('')}
     </nav>
   `
-
-  template = template.replace('{{__categoryButton__}}', categoryButton())
-  return template
 }
 
-function categoryButton() {
-  let template = `
+function categoryButton(category: any) {
+  return `
     <button
       class="px-4 py-2 relative after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-gray-900 after:hidden hover:after:block"
-      data-category="all"
+      data-category="${category.id}"
     >
-      전체
+      ${category.label}
     </button>
   `
-
-  return template
 }
 
-function articleList() {
-  let template = `
+function articleList(articles: any) {
+  return `
     <ul class="space-y-8">
-      {{__articleCard__}}
+      ${articles.map(articleCard).join('')}
     </ul>
   `
-
-  template = template.replace('{{__articleCard__}}', articleCard())
-  return template
 }
 
-function articleCard() {
-  let template = `
+function articleCard(article: any) {
+  return `
     <li class="group flex flex-col md:flex-row md:items-center gap-6 cursor-pointer">
       <div class="flex-1 space-y-2">
         <h2 class="text-2xl font-bold transition-colors group-hover:text-blue-600">
-          자바스크립트 성능 최적화
+          ${article.title}
         </h2>
         <p class="text-gray-600">
-          빠른 웹사이트를 만들기 위한 최적화 기법들을 상세히 알아봅니다. 실제 사례를 통해 성능 개선 방법을 살펴보고, 최적의 사용자 경험을 제공하는 방법을 소개합니다.
+          ${article.description}
         </p>
-        <time class="text-sm text-gray-500">2024.01.15</time>
+        <time class="text-sm text-gray-500">${article.time}</time>
       </div>
       <figure class="md:w-52 shrink-0">
         <img
-          src="https://placehold.co/400x300"
-          alt="자바스크립트 성능 최적화 관련 이미지"
+          src="${article.imgSrc}"
+          alt="${article.imgDescription}"
           class="w-full h-full object-cover rounded-2xl bg-gray-100 transition-transform duration-300 group-hover:scale-105"
         />
       </figure>
     </li> 
   `
-
-  return template
 }
 
-articleLayout()
+articleLayout(MOCK_CATEGORIES, MOCK_ARTICLE_LIST)
