@@ -2,8 +2,6 @@ import './style.css'
 
 const container: HTMLElement | null = document.getElementById('root')
 
-if (!container) throw '최상위 컨테이너가 없어 UI를 진행하지 못합니다.'
-
 const MOCK_CATEGORY = [
   { id: 'all', label: '전체' },
   { id: 'dev', label: '개발' },
@@ -47,13 +45,18 @@ function articleLayout() {
         <header>
           {{__categoryNav__}}
         </header>
-
         <main>
           {{__articleList__}}
         </main>
       </div>
-  </section>
+    </section>
   `
+
+  if (!container) throw '최상위 컨테이너가 없어 UI를 진행하지 못합니다.'
+
+  template = template.replace('{{__categoryNav__}}', categoryNav())
+  template = template.replace('{{__articleList__}}', articleList())
+  container.innerHTML = template
 }
 
 function categoryNav() {
@@ -62,6 +65,9 @@ function categoryNav() {
       {{__categoryButton__}}
     </nav>
   `
+
+  template = template.replace('{{__categoryButton__}}', categoryButton())
+  return template
 }
 
 function categoryButton() {
@@ -73,6 +79,8 @@ function categoryButton() {
       전체
     </button>
   `
+
+  return template
 }
 
 function articleList() {
@@ -81,6 +89,9 @@ function articleList() {
       {{__articleCard__}}
     </ul>
   `
+
+  template = template.replace('{{__articleCard__}}', articleCard())
+  return template
 }
 
 function articleCard() {
@@ -104,4 +115,8 @@ function articleCard() {
       </figure>
     </li> 
   `
+
+  return template
 }
+
+articleLayout()
