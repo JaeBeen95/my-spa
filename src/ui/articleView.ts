@@ -1,7 +1,7 @@
 import { categoryNav } from './categoryNav'
 import { articleList } from './articleList'
-import type { Article, Category } from '../types'
 import { renderView } from './renderView'
+import type { Article, Category } from '../types'
 
 export function articleView(
   container: string,

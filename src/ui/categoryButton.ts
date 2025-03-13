@@ -1,10 +1,14 @@
 import type { Category } from '../types'
 
 export function categoryButton(category: Category): string {
+  const isActive = category.id === 'all'
+  const activeClass = isActive ? 'after:w-full' : 'after:w-0'
+
   return `
-    <button class="relative px-4 py-2 group" data-category="${category.id}">
+    <button 
+      class="relative px-4 py-2 group category-button after:absolute after:left-0 after:bottom-0 after:h-0.5 after:bg-gray-900 ${activeClass}"
+      data-category="${category.id}">
       ${category.label}
-      <div class="absolute left-0 bottom-0 h-0.5 w-full bg-gray-900"></div>
     </button>
   `
 }
