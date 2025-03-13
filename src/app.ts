@@ -17,6 +17,7 @@ const ARTICLE_LIST = [
     time: '2024.01.15',
     imgSrc: 'https://placehold.co/400x300',
     imgDescription: '자바스크립트 성능 최적화 관련 이미지',
+    category: 'dev',
   },
   {
     id: 1,
@@ -26,6 +27,7 @@ const ARTICLE_LIST = [
     time: '2024.01.14',
     imgSrc: 'https://placehold.co/400x300',
     imgDescription: 'UI/UX 디자인 관련 이미지',
+    category: 'design',
   },
   {
     id: 2,
@@ -35,6 +37,7 @@ const ARTICLE_LIST = [
     time: '2024.01.13',
     imgSrc: 'https://placehold.co/400x300',
     imgDescription: 'React 상태 관리 라이브러리 관련 이미지',
+    category: 'dev',
   },
 ]
 
@@ -50,6 +53,7 @@ interface Article {
   time: string
   imgSrc: string
   imgDescription: string
+  category: string
 }
 
 function articleLayout(categories: Category[], articles: Article[]): void {
