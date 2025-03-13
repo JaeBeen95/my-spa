@@ -1,6 +1,7 @@
 import { categoryNav } from './categoryNav'
 import { articleList } from './articleList'
 import type { Article, Category } from '../types'
+import { renderView } from './renderView'
 
 export function articleView(
   container: string,
@@ -23,6 +24,5 @@ export function articleView(
     </section>
   `
 
-  if (!containerElement) throw '최상위 컨테이너가 없어 UI를 진행하지 못합니다.'
-  containerElement.innerHTML = template
+  renderView(containerElement, template)
 }
