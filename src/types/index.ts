@@ -12,3 +12,14 @@ export interface Article {
   imgDescription: string
   category: string
 }
+
+export interface ArticleDetail {
+  id: number
+  title: string
+  description: string
+  time: string
+  imgSrc: string
+  imgDescription: string
+  content: string
+  category: string
+}
