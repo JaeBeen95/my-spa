@@ -1,8 +1,11 @@
+import { navigate } from '../app'
 import type { Article } from '../types'
 
 export function articleCard(article: Article): string {
   return `
-    <li class="group flex flex-col md:flex-row md:items-center gap-6 cursor-pointer">
+    <li 
+      class="group flex flex-col md:flex-row md:items-center gap-6 cursor-pointer" 
+    >
       <div class="flex-1 space-y-2">
         <h2 class="text-2xl font-bold transition-colors group-hover:text-blue-600">
           ${article.title}

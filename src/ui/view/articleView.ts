@@ -1,13 +1,10 @@
-import { categoryNav } from './categoryNav'
-import { articleList } from './articleList'
-import { renderView } from '../logic/renderView'
-import type { Article, Category } from '../types'
+import { categoryNav } from '../categoryNav'
+import { articleList } from '../articleList'
+import { renderView } from '../../logic/renderView'
+import { CATEGORIES } from '../../mock'
+import type { Article } from '../../types'
 
-export function articleView(
-  container: string,
-  categories: Category[],
-  articles: Article[],
-): void {
+export function articleView(container: string, articles: Article[]): void {
   const containerElement: HTMLElement | null =
     document.getElementById(container)
 
@@ -15,7 +12,7 @@ export function articleView(
     <section class="text-gray-900 p-6 bg-gray-50">
       <div class="max-w-4xl mx-auto">
         <header>
-          ${categoryNav(categories)}
+          ${categoryNav(CATEGORIES)}
         </header>
         <main>
           ${articleList(articles)}

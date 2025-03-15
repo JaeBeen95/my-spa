@@ -1,5 +1,5 @@
-import { renderView } from '../logic/renderView'
-import { ArticleDetail } from '../types'
+import { renderView } from '../../logic/renderView'
+import { ArticleDetail } from '../../types'
 
 export function articleDetailView(
   container: string,
