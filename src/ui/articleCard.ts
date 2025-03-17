@@ -5,6 +5,7 @@ export function articleCard(article: Article): string {
   return `
     <li 
       class="group flex flex-col md:flex-row md:items-center gap-6 cursor-pointer" 
+      onclick="navigate('/article/${article.id}')"
     >
       <div class="flex-1 space-y-2">
         <h2 class="text-2xl font-bold transition-colors group-hover:text-blue-600">

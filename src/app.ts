@@ -14,11 +14,12 @@ function router(): void {
   }
 }
 
-export function navigate(path: string): void {
+function navigate(path: string): void {
   history.pushState({}, '', path)
   router()
 }
 
+document.navigate = navigate
 document.addEventListener('popstate', router)
 document.addEventListener('DOMContentLoaded', clickCategory)
 

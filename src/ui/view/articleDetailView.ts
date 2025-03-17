@@ -14,7 +14,7 @@ export function articleDetailView(
         <article class="space-y-8">
           <button 
             class="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-            onclick="history.back()"
+            onclick="navigate('/')"
           >
             뒤로가기
           </button>

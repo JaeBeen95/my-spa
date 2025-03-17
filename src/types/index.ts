@@ -1,3 +1,9 @@
+declare global {
+  interface Document {
+    navigate: (path: string) => void
+  }
+}
+
 export interface Category {
   id: string
   label: string
