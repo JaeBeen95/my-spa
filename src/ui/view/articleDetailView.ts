@@ -1,4 +1,4 @@
-import { renderView } from '../../logic/renderView'
+import { renderView } from '../logic/renderView'
 import { ArticleDetail } from '../../types'
 
 export function articleDetailView(

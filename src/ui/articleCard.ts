@@ -1,4 +1,3 @@
-import { navigate } from '../app'
 import type { Article } from '../types'
 
 export function articleCard(article: Article): string {

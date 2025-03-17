@@ -1,5 +1,5 @@
 declare global {
-  interface Document {
+  interface Window {
     navigate: (path: string) => void
   }
 }

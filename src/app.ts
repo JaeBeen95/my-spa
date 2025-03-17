@@ -1,7 +1,7 @@
-import { ARTICLE_LIST, CATEGORIES, ARTICLE_DETAIL } from './mock'
+import { ARTICLE_LIST, ARTICLE_DETAIL } from './mock'
 import { articleView } from './ui/view/articleView'
 import { articleDetailView } from './ui/view/articleDetailView'
-import { clickCategory } from './logic/clickCategory'
+import { handleCategoryClick } from './ui/logic/handleCategoryClick'
 import './style.css'
 
 function router(): void {
@@ -14,13 +14,16 @@ function router(): void {
   }
 }
 
-function navigate(path: string): void {
+function navigate(path: string, updateView: boolean = true): void {
   history.pushState({}, '', path)
-  router()
+  if (updateView) {
+    router()
+  }
 }
 
-document.navigate = navigate
+window.navigate = navigate
 document.addEventListener('popstate', router)
-document.addEventListener('DOMContentLoaded', clickCategory)
-
-router()
+document.addEventListener('DOMContentLoaded', () => {
+  router()
+  handleCategoryClick()
+})

@@ -1,5 +1,5 @@
-export function clickCategory(): void {
-  const buttons = document.querySelectorAll('button[data-category]')
+export function handleCategoryClick(): void {
+  const buttons = document.querySelectorAll('button.category-button')
 
   buttons.forEach((button) => {
     button.addEventListener('click', () => {

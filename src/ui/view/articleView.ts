@@ -1,6 +1,6 @@
 import { categoryNav } from '../categoryNav'
 import { articleList } from '../articleList'
-import { renderView } from '../../logic/renderView'
+import { renderView } from '../logic/renderView'
 import { CATEGORIES } from '../../mock'
 import type { Article } from '../../types'
 
