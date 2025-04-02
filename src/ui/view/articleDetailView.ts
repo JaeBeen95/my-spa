@@ -13,8 +13,8 @@ export function articleDetailView(
       <div class="max-w-4xl mx-auto">
         <article class="space-y-8">
           <button 
-            class="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-            onclick="navigate('/')"
+            class="navigate-back flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            data-back="true"
           >
             뒤로가기
           </button>

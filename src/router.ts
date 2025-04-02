@@ -7,6 +7,10 @@ export class Router {
   private defaultRoute: RouteInfo | null = null
   private routeTable: RouteInfo[] = []
 
+  constructor() {
+    window.addEventListener('popstate', () => this.route())
+  }
+
   setDefaultRoute(view: () => void): void {
     this.defaultRoute = { path: '', view }
   }

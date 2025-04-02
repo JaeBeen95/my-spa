@@ -1,7 +1,10 @@
 import { ARTICLE_LIST, ARTICLE_DETAIL } from './mock'
 import { articleView } from './ui/view/articleView'
 import { articleDetailView } from './ui/view/articleDetailView'
-import { handleCategoryClick } from './ui/logic/eventHandlers'
+import {
+  handleCategoryClick,
+  handleNavigateBack,
+} from './ui/logic/eventHandlers'
 import { delegateEvents } from './logic/eventDelegator'
 import { Router } from './router'
 import './style.css'
@@ -18,6 +21,11 @@ window.addEventListener('DOMContentLoaded', () => {
       selector: '.category-button',
       eventType: 'click',
       handler: handleCategoryClick,
+    },
+    {
+      selector: '.navigate-back',
+      eventType: 'click',
+      handler: handleNavigateBack,
     },
   ])
 })

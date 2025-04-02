@@ -14,3 +14,8 @@ export function handleCategoryClick(event: Event, target: Element): void {
     window.navigate(route, false)
   }
 }
+
+export function handleNavigateBack(event: Event): void {
+  event.preventDefault()
+  window.history.back()
+}
