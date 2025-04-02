@@ -3,36 +3,42 @@ interface RouteInfo {
   view: () => void
 }
 
-let defaultRoute: RouteInfo | null = null
-const routeTable: RouteInfo[] = []
+export class Router {
+  private defaultRoute: RouteInfo | null = null
+  private routeTable: RouteInfo[] = []
 
-export function setDefaultRoute(view: () => void): void {
-  defaultRoute = { path: '', view }
-}
-
-export function addRoute(path: string, view: () => void): void {
-  routeTable.push({ path, view })
-}
-
-export function router(): void {
-  const path = window.location.pathname
-
-  if ((path === '/' || path === '') && defaultRoute) {
-    defaultRoute.view()
-    return
+  setDefaultRoute(view: () => void): void {
+    this.defaultRoute = { path: '', view }
   }
 
-  for (const route of routeTable) {
-    if (path.startsWith(route.path)) {
-      route.view()
-      return
+  addRoute(path: string, view: () => void): void {
+    this.routeTable.push({ path, view })
+  }
+
+  go(): void {
+    this.route()
+  }
+
+  navigate(path: string, updateView: boolean = true): void {
+    history.pushState({}, '', path)
+    if (updateView) {
+      this.route()
     }
   }
-}
 
-export function navigate(path: string, updateView: boolean = true): void {
-  history.pushState({}, '', path)
-  if (updateView) {
-    router()
+  private route(): void {
+    const path = window.location.pathname
+
+    if ((path === '/' || path === '') && this.defaultRoute) {
+      this.defaultRoute.view()
+      return
+    }
+
+    for (const route of this.routeTable) {
+      if (path.startsWith(route.path)) {
+        route.view()
+        return
+      }
+    }
   }
 }

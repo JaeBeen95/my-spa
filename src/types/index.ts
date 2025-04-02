@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    navigate: (path: string) => void
+    navigate: (path: string, updateView?: boolean) => void
   }
 }
 

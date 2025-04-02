@@ -1,5 +1,3 @@
-import { navigate } from '../../router'
-
 export function handleCategoryClick(event: Event, target: Element): void {
   event.preventDefault()
 
@@ -13,6 +11,6 @@ export function handleCategoryClick(event: Event, target: Element): void {
 
   const route = target.getAttribute('data-route')
   if (route) {
-    navigate(route, false)
+    window.navigate(route, false)
   }
 }
