@@ -8,7 +8,7 @@ export function categoryButton(category: Category): string {
   return `
     <button 
       class="relative px-4 py-2 group category-button after:absolute after:left-0 after:bottom-0 after:h-0.5 after:bg-gray-900 ${activeClass}"
-      onclick="navigate('${route}', false)">
+      data-route="${route}">
       <span>${category.label}</span>
     </button>
   `
