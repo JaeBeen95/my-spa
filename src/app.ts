@@ -14,9 +14,9 @@ const router = new Router()
 window.navigate = router.navigate.bind(router)
 window.addEventListener('DOMContentLoaded', () => {
   router.setDefaultRoute(() => articleView('root', ARTICLE_LIST))
-  router.addRoute('/article', () => articleDetailView('root', ARTICLE_DETAIL))
-  router.addRoute('/dev', () => articleView('root', ARTICLE_LIST))
-  router.addRoute('/design', () => articleView('root', ARTICLE_LIST))
+  router.addRoute('/article/:id', () =>
+    articleDetailView('root', ARTICLE_DETAIL),
+  )
 
   router.go()
   delegateEvents([

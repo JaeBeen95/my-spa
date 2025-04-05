@@ -1,6 +1,3 @@
-import { ARTICLE_LIST } from '../../mock'
-import { articleView } from '../view/articleView'
-
 export function handleCategoryClick(event: Event, target: Element): void {
   event.preventDefault()
 
@@ -15,7 +12,6 @@ export function handleCategoryClick(event: Event, target: Element): void {
   const route = target.getAttribute('data-route')
   if (route) {
     window.navigate(route, false)
-    articleView('root', ARTICLE_LIST)
   }
 }
 
