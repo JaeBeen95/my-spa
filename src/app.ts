@@ -1,14 +1,41 @@
-import { ARTICLE_LIST, ARTICLE_DETAIL } from './mock'
+import { ARTICLE_DETAIL } from './mock'
 import { articleView } from './ui/view/articleView'
 import { articleDetailView } from './ui/view/articleDetailView'
-import { addRoute, navigate, router, setDefaultRoute } from './router'
-import { handleCategoryClick } from './ui/logic/handleCategoryClick'
+import {
+  handleCategoryClick,
+  handleNavigateBack,
+  handleRouteClick,
+} from './ui/logic/eventHandlers'
+import { delegateEvents } from './logic/eventDelegator'
+import { Router } from './router'
 import './style.css'
 
-window.navigate = navigate
+export const router = new Router()
+
+export const navigate = router.navigate.bind(router)
+
 window.addEventListener('DOMContentLoaded', () => {
-  setDefaultRoute(() => articleView('root', ARTICLE_LIST))
-  addRoute('/article', () => articleDetailView('root', ARTICLE_DETAIL))
-  router()
-  handleCategoryClick()
+  router.setDefaultRoute(() => articleView('root'))
+  router.addRoute('/article/:id', () =>
+    articleDetailView('root', ARTICLE_DETAIL),
+  )
+
+  router.go()
+  delegateEvents([
+    {
+      selector: '.category-button',
+      eventType: 'click',
+      handler: handleCategoryClick,
+    },
+    {
+      selector: '.navigate-back',
+      eventType: 'click',
+      handler: handleNavigateBack,
+    },
+    {
+      selector: '[data-route]',
+      eventType: 'click',
+      handler: handleRouteClick,
+    },
+  ])
 })

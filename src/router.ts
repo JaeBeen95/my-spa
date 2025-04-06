@@ -1,38 +1,96 @@
 interface RouteInfo {
   path: string
-  view: () => void
+  regex: RegExp
+  pathParams: string[]
+  view: (
+    pathParam?: Record<string, string>,
+    queryParam?: Record<string, string>,
+  ) => void
 }
 
-let defaultRoute: RouteInfo | null = null
-const routeTable: RouteInfo[] = []
+export class Router {
+  private defaultRoute: RouteInfo | null = null
+  private routeTable: RouteInfo[] = []
 
-export function setDefaultRoute(view: () => void): void {
-  defaultRoute = { path: '', view }
-}
-
-export function addRoute(path: string, view: () => void): void {
-  routeTable.push({ path, view })
-}
-
-export function router(): void {
-  const path = window.location.pathname
-
-  if ((path === '/' || path === '') && defaultRoute) {
-    defaultRoute.view()
-    return
+  constructor() {
+    window.addEventListener('popstate', () => this.route())
   }
 
-  for (const route of routeTable) {
-    if (path.startsWith(route.path)) {
-      route.view()
-      return
+  private getPathParams(path: string): { regex: RegExp; pathParams: string[] } {
+    const pathParams: string[] = []
+    const regexPath = path.replace(/:([^\/]+)/g, (_, paramName) => {
+      pathParams.push(paramName)
+      return '([^\\/]+)'
+    })
+    const regex = new RegExp(`^${regexPath}\\/?$`)
+    return { regex, pathParams }
+  }
+
+  private getQueryParams(): Record<string, string> {
+    const queryParam: Record<string, string> = {}
+    const searchParams = new URLSearchParams(window.location.search)
+    for (const [key, value] of searchParams.entries()) {
+      queryParam[key] = value
     }
+    return queryParam
   }
-}
 
-export function navigate(path: string, updateView: boolean = true): void {
-  history.pushState({}, '', path)
-  if (updateView) {
-    router()
+  setDefaultRoute(
+    view: (
+      pathParam?: Record<string, string>,
+      queryParam?: Record<string, string>,
+    ) => void,
+    path: string = '',
+  ): void {
+    const { regex, pathParams } = this.getPathParams(path)
+    this.defaultRoute = { path, regex, pathParams, view }
+  }
+
+  addRoute(
+    path: string,
+    view: (
+      pathParams?: Record<string, string>,
+      queryParams?: Record<string, string>,
+    ) => void,
+  ): void {
+    const { regex, pathParams } = this.getPathParams(path)
+    this.routeTable.push({ path, regex, pathParams, view })
+  }
+
+  go(): void {
+    this.route()
+  }
+
+  navigate(path: string): void {
+    history.pushState({}, '', path)
+    this.route()
+  }
+
+  private route(): void {
+    const path = window.location.pathname
+    const queryParams = this.getQueryParams()
+
+    for (const route of this.routeTable) {
+      const match = path.match(route.regex)
+      if (match) {
+        const pathParam: Record<string, string> = {}
+        route.pathParams.forEach((name, index) => {
+          pathParam[name] = match[index + 1]
+        })
+        route.view(pathParam, queryParams)
+        return
+      }
+    }
+
+    if (this.defaultRoute) {
+      const match = path.match(this.defaultRoute.regex)
+      const pathParam: Record<string, string> = {}
+      if (match) {
+        this.defaultRoute.pathParams.forEach((name, index) => {
+          pathParam[name] = match[index + 1]
+        })
+      }
+      this.defaultRoute.view(pathParam, queryParams)
+    }
   }
 }
