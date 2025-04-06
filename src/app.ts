@@ -1,19 +1,21 @@
-import { ARTICLE_LIST, ARTICLE_DETAIL } from './mock'
+import { ARTICLE_DETAIL } from './mock'
 import { articleView } from './ui/view/articleView'
 import { articleDetailView } from './ui/view/articleDetailView'
 import {
   handleCategoryClick,
   handleNavigateBack,
+  handleRouteClick,
 } from './ui/logic/eventHandlers'
 import { delegateEvents } from './logic/eventDelegator'
 import { Router } from './router'
 import './style.css'
 
-const router = new Router()
+export const router = new Router()
 
-window.navigate = router.navigate.bind(router)
+export const navigate = router.navigate.bind(router)
+
 window.addEventListener('DOMContentLoaded', () => {
-  router.setDefaultRoute(() => articleView('root', ARTICLE_LIST))
+  router.setDefaultRoute(() => articleView('root'))
   router.addRoute('/article/:id', () =>
     articleDetailView('root', ARTICLE_DETAIL),
   )
@@ -29,6 +31,11 @@ window.addEventListener('DOMContentLoaded', () => {
       selector: '.navigate-back',
       eventType: 'click',
       handler: handleNavigateBack,
+    },
+    {
+      selector: '[data-route]',
+      eventType: 'click',
+      handler: handleRouteClick,
     },
   ])
 })

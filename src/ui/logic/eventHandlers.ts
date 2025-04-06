@@ -1,21 +1,18 @@
-export function handleCategoryClick(event: Event, target: Element): void {
-  event.preventDefault()
+import { navigate } from '../../app'
 
-  document.querySelectorAll('.category-button').forEach((btn) => {
-    btn.classList.remove('after:w-full')
-    btn.classList.add('after:w-0')
-  })
-
-  target.classList.remove('after:w-0')
-  target.classList.add('after:w-full')
-
-  const route = target.getAttribute('data-route')
-  if (route) {
-    window.navigate(route, false)
-  }
+export function handleCategoryClick(_: Event, el: Element): void {
+  const categoryId = el.getAttribute('data-category') || 'all'
+  navigate(`/${categoryId}`)
 }
 
 export function handleNavigateBack(event: Event): void {
   event.preventDefault()
   window.history.back()
+}
+
+export function handleRouteClick(_: Event, el: Element) {
+  const path = el.getAttribute('data-route')
+  if (path) {
+    navigate(path)
+  }
 }

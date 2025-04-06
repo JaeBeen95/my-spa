@@ -61,11 +61,9 @@ export class Router {
     this.route()
   }
 
-  navigate(path: string, updateView: boolean = true): void {
+  navigate(path: string): void {
     history.pushState({}, '', path)
-    if (updateView) {
-      this.route()
-    }
+    this.route()
   }
 
   private route(): void {
