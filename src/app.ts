@@ -1,9 +1,14 @@
+import { ARTICLE_LIST, ARTICLE_DETAIL } from './mock'
+import { articleView } from './ui/view/articleView'
+import { articleDetailView } from './ui/view/articleDetailView'
+import { addRoute, navigate, router, setDefaultRoute } from './router'
+import { handleCategoryClick } from './ui/logic/handleCategoryClick'
 import './style.css'
 
-const rootElement: HTMLElement | null = document.getElementById('root')
-
-if (!rootElement) throw '최상위 컨테이너가 없어 UI를 진행하지 못합니다.'
-
-rootElement.innerHTML = `
-<div class="text-xl">hello world</div>
-`
+window.navigate = navigate
+window.addEventListener('DOMContentLoaded', () => {
+  setDefaultRoute(() => articleView('root', ARTICLE_LIST))
+  addRoute('/article', () => articleDetailView('root', ARTICLE_DETAIL))
+  router()
+  handleCategoryClick()
+})
