@@ -1,11 +1,15 @@
+/* @JSX createElement */
+
+import { createDOM } from './react'
+
 interface RouteInfo {
   path: string
   regex: RegExp
   pathParams: string[]
   view: (
-    pathParam?: Record<string, string>,
-    queryParam?: Record<string, string>,
-  ) => void
+    pathParams?: Record<string, string>,
+    queryParams?: Record<string, string>,
+  ) => JSX.Element
 }
 
 export class Router {
@@ -13,10 +17,22 @@ export class Router {
   private routeTable: RouteInfo[] = []
 
   constructor() {
-    window.addEventListener('popstate', () => this.route())
+    window.addEventListener('popstate', () => this.refresh())
+    this.delegateLinkClicks()
   }
 
-  private getPathParams(path: string): { regex: RegExp; pathParams: string[] } {
+  private delegateLinkClicks() {
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement
+      if (target.matches('[data-route]')) {
+        e.preventDefault()
+        const href = target.getAttribute('href')
+        if (href) this.navigate(href)
+      }
+    })
+  }
+
+  private getPathParams(path: string) {
     const pathParams: string[] = []
     const regexPath = path.replace(/:([^\/]+)/g, (_, paramName) => {
       pathParams.push(paramName)
@@ -37,11 +53,11 @@ export class Router {
 
   setDefaultRoute(
     view: (
-      pathParam?: Record<string, string>,
-      queryParam?: Record<string, string>,
-    ) => void,
+      pathParams?: Record<string, string>,
+      queryParams?: Record<string, string>,
+    ) => JSX.Element,
     path: string = '',
-  ): void {
+  ) {
     const { regex, pathParams } = this.getPathParams(path)
     this.defaultRoute = { path, regex, pathParams, view }
   }
@@ -51,46 +67,42 @@ export class Router {
     view: (
       pathParams?: Record<string, string>,
       queryParams?: Record<string, string>,
-    ) => void,
-  ): void {
+    ) => JSX.Element,
+  ) {
     const { regex, pathParams } = this.getPathParams(path)
     this.routeTable.push({ path, regex, pathParams, view })
   }
 
-  go(): void {
-    this.route()
-  }
-
-  navigate(path: string): void {
+  navigate(path: string) {
     history.pushState({}, '', path)
-    this.route()
+    this.refresh()
   }
 
-  private route(): void {
+  getView(): JSX.Element {
     const path = window.location.pathname
     const queryParams = this.getQueryParams()
 
     for (const route of this.routeTable) {
       const match = path.match(route.regex)
       if (match) {
-        const pathParam: Record<string, string> = {}
+        const pathParams: Record<string, string> = {}
         route.pathParams.forEach((name, index) => {
-          pathParam[name] = match[index + 1]
+          pathParams[name] = match[index + 1]
         })
-        route.view(pathParam, queryParams)
-        return
+        return route.view(pathParams, queryParams)
       }
     }
 
     if (this.defaultRoute) {
-      const match = path.match(this.defaultRoute.regex)
-      const pathParam: Record<string, string> = {}
-      if (match) {
-        this.defaultRoute.pathParams.forEach((name, index) => {
-          pathParam[name] = match[index + 1]
-        })
-      }
-      this.defaultRoute.view(pathParam, queryParams)
+      return this.defaultRoute.view({}, queryParams)
+    }
+  }
+
+  refresh() {
+    const root = document.getElementById('root')
+    if (root) {
+      root.innerHTML = ''
+      root.appendChild(createDOM(this.getView()))
     }
   }
 }
