@@ -6,9 +6,6 @@ declare global {
       [elemName: string]: any;
     }
   }
-  interface Window {
-    navigate: (path: string, updateView?: boolean) => void;
-  }
 }
 
 export type VNode = string | number | VElement | null | undefined | boolean;
