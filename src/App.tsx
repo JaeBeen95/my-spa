@@ -11,7 +11,7 @@ import {
   handleRouteClick,
 } from './ui/logic/eventHandlers';
 
-export function App(): void {
+export function App(): JSX.Element {
   const router = useRouter();
 
   router.setDefaultRoute(() => <ArticleView />, '/');
@@ -19,8 +19,6 @@ export function App(): void {
   router.addRoute('/article/:id', () => (
     <ArticleDetailView article={ARTICLE_DETAIL} />
   ));
-
-  router.renderPage();
 
   delegateEvents([
     {
@@ -39,4 +37,6 @@ export function App(): void {
       handler: handleRouteClick,
     },
   ]);
+
+  return router.createPage();
 }

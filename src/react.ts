@@ -1,21 +1,52 @@
-import { ComponentFunction, VElement, VNode } from './types';
+import { ComponentFunction, VNode } from './types';
 
-export function createDOM(node: VNode): Node {
-  if (node == null || typeof node === 'boolean') {
+type RenderContext = {
+  component: ComponentFunction;
+  props: { [key: string]: any } | null;
+  container: HTMLElement;
+};
+
+const states: unknown[] = [];
+const renderContext: RenderContext = {
+  component: () => ({ tag: 'div', props: {}, children: [] }),
+  props: {},
+  container: document.createElement('div'),
+};
+let hookIndex = 0;
+
+export function useState<T>(initialState: T): [T, (newState: T) => void] {
+  const stateIndex = hookIndex;
+  hookIndex = hookIndex + 1;
+
+  if (states[stateIndex] === undefined) {
+    states[stateIndex] = initialState;
+  }
+
+  const setState = (newState: T) => {
+    states[stateIndex] = newState;
+    const newVNode = renderContext.component(renderContext.props || {});
+    render(newVNode, renderContext.container);
+  };
+
+  return [states[stateIndex] as T, setState];
+}
+
+export function createDOM(vNode: VNode): Node {
+  if (vNode == null || typeof vNode === 'boolean') {
     return document.createTextNode('');
   }
 
-  if (typeof node === 'string' || typeof node === 'number') {
-    return document.createTextNode(String(node));
+  if (typeof vNode === 'string' || typeof vNode === 'number') {
+    return document.createTextNode(String(vNode));
   }
 
-  const element = document.createElement(node.tag as string);
+  const element = document.createElement(vNode.tag as string);
 
-  Object.entries(node.props || {}).forEach(([name, value]) => {
+  Object.entries(vNode.props || {}).forEach(([name, value]) => {
     element.setAttribute(name, value);
   });
 
-  for (const child of node.children || []) {
+  for (const child of vNode.children || []) {
     element.appendChild(createDOM(child));
   }
 
@@ -36,6 +67,11 @@ export function createElement(
     );
 
   if (typeof tag === 'function') {
+    if (!renderContext.component) {
+      renderContext.component = tag;
+      renderContext.props = props;
+    }
+
     const result =
       filteredChildren.length > 0
         ? tag({
@@ -57,6 +93,11 @@ export function createElement(
   };
 }
 
-export function render(vDom: VNode, container: HTMLElement): void {
-  container.appendChild(createDOM(vDom));
+export function render(vNode: VNode, container: HTMLElement): void {
+  hookIndex = 0;
+
+  container.innerHTML = '';
+  container.appendChild(createDOM(vNode));
+
+  renderContext.container = container;
 }
