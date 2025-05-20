@@ -18,6 +18,7 @@ export interface VElement {
   tag: string | ComponentFunction;
   props?: { [key: string]: any };
   children?: VNode[];
+  element?: HTMLElement;
 }
 
 export interface Category {

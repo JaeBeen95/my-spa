@@ -1,5 +1,6 @@
 /** @jsx createElement */
 import { createElement } from '../react';
+import { useNavigate } from '../router';
 import type { Article } from '../types';
 
 interface Props {
@@ -7,10 +8,16 @@ interface Props {
 }
 
 export function ArticleCard({ article }: Props): JSX.Element {
+  const navigate = useNavigate();
+
+  const handleRouteClick = () => {
+    navigate(`/article/${article.id}`);
+  };
+
   return (
     <li
       class="group flex flex-col md:flex-row md:items-center gap-6 cursor-pointer route-link"
-      data-route={`/article/${article.id}`}
+      onClick={handleRouteClick}
     >
       <div class="flex-1 space-y-2">
         <h2 class="text-2xl font-bold transition-colors group-hover:text-blue-600">

@@ -7,13 +7,18 @@ interface Props {
 }
 
 export function ArticleDetailView({ article }: Props): JSX.Element {
+  const handleNavigateBack = (e: Event): void => {
+    e.preventDefault();
+    window.history.back();
+  };
+
   return (
     <section class="text-gray-900 p-6 bg-gray-50">
       <div class="max-w-4xl mx-auto">
         <article class="space-y-8">
           <button
             class="navigate-back flex items-center gap-2 text-gray-600 hover:text-gray-900"
-            data-back="true"
+            onClick={handleNavigateBack}
           >
             뒤로가기
           </button>
