@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import { createElement } from '../react';
-import { CategoryButton } from './categoryButton';
+import { CategoryButton } from './CategoryButton';
 import type { Category } from '../types';
 
 interface Props {

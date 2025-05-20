@@ -1,6 +1,6 @@
-/* @jsx createElement */
+import { createRoot } from './react';
 import { App } from './App';
-import { createElement, render } from './react';
 import './style.css';
 
-render(<App />, document.querySelector('#root')!);
+const root = createRoot(document.querySelector('#root')!);
+root.render(App);

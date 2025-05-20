@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import { createElement } from '../react';
-import { ArticleCard } from './articleCard';
+import { ArticleCard } from './ArticleCard';
 import type { Article } from '../types';
 
 interface Props {

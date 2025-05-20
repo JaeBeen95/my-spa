@@ -2,8 +2,8 @@
 
 import { ARTICLE_LIST, CATEGORIES } from '../../mock';
 import { createElement } from '../../react';
-import { ArticleList } from '../articleList';
-import { CategoryNav } from '../categoryNav';
+import { ArticleList } from '../ArticleList';
+import { CategoryNav } from '../CategoryNav';
 
 export function ArticleView(): JSX.Element {
   const categoryId = window.location.pathname.slice(1) || 'all';

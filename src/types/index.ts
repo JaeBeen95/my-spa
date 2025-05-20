@@ -1,24 +1,24 @@
-declare global {
-  namespace JSX {
-    type Element = VNode;
+export type VNode = VElement | string | number | boolean | null | undefined;
 
-    interface IntrinsicElements {
-      [elemName: string]: any;
-    }
-  }
-}
-
-export type VNode = string | number | VElement | null | undefined | boolean;
-
-export type ComponentFunction = (props?: {
-  [key: string]: any;
-}) => VNode | VElement;
+export type ComponentType = (props?: { [key: string]: any }) => VNode;
 
 export interface VElement {
-  tag: string | ComponentFunction;
+  tag: string | ComponentType;
   props?: { [key: string]: any };
   children?: VNode[];
   element?: HTMLElement;
+}
+
+export interface HookContext {
+  states: any[];
+  queues: any[][];
+  hookIndex: number;
+}
+
+export interface RootRenderContext {
+  component: ComponentType;
+  props?: Record<string, any>;
+  container: HTMLElement;
 }
 
 export interface Category {
@@ -36,13 +36,6 @@ export interface Article {
   category: string;
 }
 
-export interface ArticleDetail {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  imgSrc: string;
-  imgDescription: string;
+export interface ArticleDetail extends Article {
   content: string;
-  category: string;
 }
