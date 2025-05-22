@@ -2,11 +2,16 @@ export type VNode = VElement | string | number | boolean | null | undefined;
 
 export type ComponentType = (props?: { [key: string]: any }) => VNode;
 
+export interface RootContext {
+  component: ComponentType;
+  props: Record<string, any>;
+  container: HTMLElement;
+}
+
 export interface VElement {
   tag: string | ComponentType;
   props?: { [key: string]: any };
   children?: VNode[];
-  element?: HTMLElement;
 }
 
 export interface HookContext {

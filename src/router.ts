@@ -1,6 +1,5 @@
 /* @jsx createElement */
-
-import { createDOM } from './react';
+import { createDOM } from './react/createDom';
 import type { VNode } from './types';
 
 interface RouteInfo {
