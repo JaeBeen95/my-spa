@@ -1,29 +1,35 @@
-export type VNode = VElement | string | number | boolean | null | undefined;
-
-export type ComponentType = (props?: { [key: string]: any }) => VNode;
-
-export interface RootContext {
-  component: ComponentType;
-  props: Record<string, any>;
-  container: HTMLElement;
-}
+export type Props = Record<string, any>;
+export type Primitive = string | number | boolean | null | undefined;
+export type VNode = VElement | Primitive;
 
 export interface VElement {
   tag: string | ComponentType;
-  props?: { [key: string]: any };
-  children?: VNode[];
+  props: Props;
+  children: VNode[];
+}
+
+export type ComponentType = (props?: Props) => VNode;
+
+export interface StateHook<T = any> {
+  value: T;
+  queue: (T | ((prev: T) => T))[];
+}
+
+export interface EffectHook {
+  deps?: any[];
+  cleanup?: () => void;
+  effect: () => void | (() => void);
+}
+
+export interface PendingEffect {
+  idx: number;
 }
 
 export interface HookContext {
-  states: any[];
-  queues: any[][];
   hookIndex: number;
-}
-
-export interface RootRenderContext {
-  component: ComponentType;
-  props?: Record<string, any>;
-  container: HTMLElement;
+  stateHooks: StateHook[];
+  effectHooks: EffectHook[];
+  pendingEffects: PendingEffect[];
 }
 
 export interface Category {

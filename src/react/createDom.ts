@@ -26,7 +26,7 @@ export function createDOM(vNode: VNode): Node {
     }
   });
 
-  vNode.children?.forEach((child) => {
+  (vNode.children || []).forEach((child) => {
     element.appendChild(createDOM(child));
   });
 

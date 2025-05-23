@@ -1,92 +1,144 @@
-import { ComponentType, VNode, HookContext } from '../types';
+import { ComponentType, VNode, HookContext, EffectHook, Props } from '../types';
 import { createDOM } from './createDom';
 
-const hookContextMap = new WeakMap<ComponentType, HookContext>();
-let currentHookContext: HookContext | null = null;
-
+const contexts = new Map<ComponentType, HookContext>();
+let currentContext: HookContext | null = null;
 let rootComponent: ComponentType;
 let rootContainer: HTMLElement;
-
 let isRenderScheduled = false;
 
 export function useState<T>(
   initialState: T,
 ): [T, (update: T | ((prev: T) => T)) => void] {
-  const hookContext = currentHookContext!;
-  const hookIndex = hookContext.hookIndex++;
+  const context = currentContext!;
+  const hookIndex = context.hookIndex++;
 
-  if (hookContext.states[hookIndex] === undefined) {
-    hookContext.states[hookIndex] = initialState;
-    hookContext.queues[hookIndex] = [];
+  if (!context.stateHooks[hookIndex]) {
+    context.stateHooks[hookIndex] = { value: initialState, queue: [] };
   }
 
-  let state = hookContext.states[hookIndex];
-  const queue = hookContext.queues[hookIndex];
-
-  while (queue.length) {
-    const update = queue.shift()!;
-    state = typeof update === 'function' ? update(state) : update;
-  }
-
-  hookContext.states[hookIndex] = state;
+  const stateHook = context.stateHooks[hookIndex];
+  processStateQueue(stateHook);
 
   const setState = (update: T | ((prev: T) => T)) => {
-    hookContext.queues[hookIndex].push(update);
-    enqueueRender();
+    stateHook.queue.push(update);
+    scheduleUpdate();
   };
 
-  return [state, setState];
+  return [stateHook.value, setState];
+}
+
+function processStateQueue<T>(hook: {
+  value: T;
+  queue: (T | ((prev: T) => T))[];
+}) {
+  while (hook.queue.length > 0) {
+    const update = hook.queue.shift()!;
+    hook.value =
+      typeof update === 'function'
+        ? (update as (prev: T) => T)(hook.value)
+        : update;
+  }
+}
+
+export function useEffect(effect: EffectHook['effect'], deps?: any[]): void {
+  const context = currentContext!;
+  const index = context.hookIndex++;
+
+  if (!context.effectHooks[index]) {
+    context.effectHooks[index] = {
+      deps: undefined,
+      cleanup: undefined,
+      effect,
+    };
+  }
+
+  const effectHook = context.effectHooks[index];
+  effectHook.effect = effect;
+
+  if (shouldRunEffect(effectHook.deps, deps)) {
+    context.pendingEffects.push({ idx: index });
+    effectHook.deps = deps ? [...deps] : deps;
+  }
+}
+
+function shouldRunEffect(
+  prevDeps: any[] | undefined,
+  nextDeps: any[] | undefined,
+): boolean {
+  if (!nextDeps || !prevDeps || nextDeps.length !== prevDeps.length) {
+    return true;
+  }
+  return nextDeps.some((dep, i) => !Object.is(dep, prevDeps[i]));
 }
 
 export function createElement(
   tag: string | ComponentType,
-  props?: Record<string, any>,
+  props: Props = {},
   ...children: VNode[]
 ): VNode {
-  props = props ?? {};
-  const filteredChildren = children
-    .flat()
-    .filter((child) => child != null && child !== false);
+  const filteredChildren = children.filter(
+    (c) => c != null && c !== false,
+  ) as VNode[];
 
   if (typeof tag === 'function') {
-    let hookContext = hookContextMap.get(tag);
-
-    if (!hookContext) {
-      hookContext = { states: [], queues: [], hookIndex: 0 };
-      hookContextMap.set(tag, hookContext);
-    }
-
-    const prevContext = currentHookContext;
-    currentHookContext = hookContext;
-    hookContext.hookIndex = 0;
+    const context = getContext(tag);
+    const prevContext = currentContext;
+    currentContext = context;
+    context.hookIndex = 0;
 
     const vNode = tag({ ...props, children: filteredChildren });
-
-    currentHookContext = prevContext;
+    currentContext = prevContext;
     return vNode;
   }
 
   return { tag, props, children: filteredChildren };
 }
 
-function updateRoot() {
-  const vNode = rootComponent();
-  rootContainer.innerHTML = '';
-  rootContainer.appendChild(createDOM(vNode));
+function getContext(component: ComponentType): HookContext {
+  let context = contexts.get(component);
+  if (!context) {
+    context = {
+      hookIndex: 0,
+      stateHooks: [],
+      effectHooks: [],
+      pendingEffects: [],
+    };
+    contexts.set(component, context);
+  }
+  return context;
 }
 
-function enqueueRender() {
-  if (isRenderScheduled) return;
-  isRenderScheduled = true;
+function renderRoot(): void {
+  const domTree = createDOM(rootComponent());
+  rootContainer.innerHTML = '';
+  rootContainer.appendChild(domTree);
+}
 
-  queueMicrotask(() => {
-    isRenderScheduled = false;
-    updateRoot();
+function flushEffects(): void {
+  contexts.forEach((context) => {
+    for (const effect of context.pendingEffects) {
+      const hook = context.effectHooks[effect.idx];
+      hook.cleanup?.();
+      const cleanup = hook.effect();
+      hook.cleanup = typeof cleanup === 'function' ? cleanup : undefined;
+    }
+    context.pendingEffects = [];
   });
 }
 
-export function render(component: ComponentType, container: HTMLElement) {
+export function scheduleUpdate(): void {
+  if (isRenderScheduled) return;
+  isRenderScheduled = true;
+  queueMicrotask(() => {
+    isRenderScheduled = false;
+    renderRoot();
+    flushEffects();
+  });
+}
+
+export function render(component: ComponentType, container: HTMLElement): void {
   rootComponent = component;
   rootContainer = container;
-  updateRoot();
+  scheduleUpdate();
 }

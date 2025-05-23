@@ -1,12 +1,11 @@
 /** @jsx createElement */
 import { createElement } from '../../react';
+import { ARTICLE_DETAIL } from '../../mock';
 import type { ArticleDetail } from '../../types';
 
-interface Props {
-  article: ArticleDetail;
-}
+export function ArticleDetailView(): JSX.Element {
+  const article: ArticleDetail = ARTICLE_DETAIL;
 
-export function ArticleDetailView({ article }: Props): JSX.Element {
   const handleNavigateBack = (e: Event): void => {
     e.preventDefault();
     window.history.back();
