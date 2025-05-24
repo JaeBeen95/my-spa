@@ -77,9 +77,9 @@ export function createElement(
   props: Props = {},
   ...children: VNode[]
 ): VNode {
-  const filteredChildren = children.filter(
-    (c) => c != null && c !== false,
-  ) as VNode[];
+  const filteredChildren = children
+    .flat()
+    .filter((c) => c != null && c !== false) as VNode[];
 
   if (typeof tag === 'function') {
     const context = getContext(tag);

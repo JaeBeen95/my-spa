@@ -2,13 +2,15 @@
 import { createElement } from '../../react';
 import { ARTICLE_DETAIL } from '../../mock';
 import type { ArticleDetail } from '../../types';
+import { useNavigate } from '../../router';
 
 export function ArticleDetailView(): JSX.Element {
   const article: ArticleDetail = ARTICLE_DETAIL;
+  const navigate = useNavigate();
 
-  const handleNavigateBack = (e: Event): void => {
+  const handleClick = (e: Event) => {
     e.preventDefault();
-    window.history.back();
+    navigate(-1);
   };
 
   return (
@@ -17,7 +19,7 @@ export function ArticleDetailView(): JSX.Element {
         <article class="space-y-8">
           <button
             class="navigate-back flex items-center gap-2 text-gray-600 hover:text-gray-900"
-            onClick={handleNavigateBack}
+            onClick={handleClick}
           >
             뒤로가기
           </button>
