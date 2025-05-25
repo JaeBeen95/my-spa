@@ -79,7 +79,7 @@ export function createElement(
 ): VNode {
   const filteredChildren = children
     .flat()
-    .filter((c) => c != null && c !== false) as VNode[];
+    .filter((child) => child != null && child !== false) as VNode[];
 
   if (typeof tag === 'function') {
     const context = getContext(tag);

@@ -32,7 +32,7 @@ function updateLocation(): void {
     search: location.search,
     hash: location.hash,
   };
-  listeners.forEach((fn) => fn());
+  listeners.forEach((listener) => listener());
 }
 
 addEventListener('popstate', updateLocation);
@@ -170,7 +170,7 @@ export function Navigate({
   to: string;
   replace?: boolean;
 }): null {
-  const nav = useNavigate();
-  useEffect(() => nav(to, { replace }), [to, replace]);
+  const navigate = useNavigate();
+  useEffect(() => navigate(to, { replace }), [to, replace]);
   return null;
 }
