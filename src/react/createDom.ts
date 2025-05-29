@@ -1,10 +1,10 @@
 import { VNode } from '../types';
 
-function isEventProp(name: string): boolean {
+export function isEventProp(name: string): boolean {
   return name.startsWith('on') && name.length > 2;
 }
 
-function getEventType(propName: string): string {
+export function getEventType(propName: string): string {
   return propName.slice(2).toLowerCase();
 }
 
