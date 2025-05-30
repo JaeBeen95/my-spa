@@ -2,6 +2,12 @@ export type Props = Record<string, any>;
 export type Primitive = string | number | boolean | null | undefined;
 export type VNode = VElement | Primitive;
 
+export interface RootContext {
+  component: ComponentType;
+  props: Record<string, any>;
+  container: HTMLElement;
+}
+
 export interface VElement {
   tag: string | ComponentType;
   props: Props;

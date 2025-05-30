@@ -11,7 +11,7 @@ export function ArticleList({ articles }: Props): JSX.Element {
   return (
     <ul class="space-y-8">
       {articles.map((article) => (
-        <ArticleCard article={article} />
+        <ArticleCard article={article}/>
       ))}
     </ul>
   );
